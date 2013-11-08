@@ -14,7 +14,7 @@ set mapred.job.name = dprpt_mb_api_monthly_generic_${env.YYYY}${env.MM}${env.DD}
 alter table $table_rpt drop if exists $partition;
 
 ################################################
-#新增用户
+##新增用户
 insert into table $table_rpt $partition
 select
     '新增用户数', COUNT(1)
@@ -24,7 +24,7 @@ where
     cal_dt $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE;
 
 ################################################
-#每月独立访客
+##每月独立访客
 insert into table $table_rpt $partition
 select
     '每月独立访客', COUNT(DISTINCT dpid)
@@ -34,7 +34,7 @@ where
     hp_stat_time $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE;
 
 ################################################
-#每月访问次数
+##每月访问次数
 insert into table $table_rpt $partition
 select
     '每月访问次数', VALUE
@@ -44,7 +44,7 @@ where
     hp_stat_date = $start_date;
 
 ################################################
-#总用户数
+##总用户数
 insert into table $table_rpt $partition
 select
     '总用户数', COUNT(1)
@@ -54,7 +54,7 @@ where
     cal_dt <= '$end_date' and $SATISFY_LOG_TYPE;
 
 ################################################
-#总流量
+##总流量
 insert into table $table_rpt $partition
 select
     '总流量', SUM(VALUE)
@@ -64,7 +64,7 @@ where
     hp_stat_date <= '$end_date';
 
 ################################################
-#十秒内访问比例
+##十秒内访问比例
 insert into table $table_rpt $partition
 select
     '10秒内访问比例', SUM(

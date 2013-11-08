@@ -1,6 +1,6 @@
 use bi;
 
-#月pv mid
+##月pv mid
 drop table if exists dpmid_mb_api_monthly_pv;
 create external table if not exists dpmid_mb_api_monthly_pv
 (
@@ -11,7 +11,7 @@ ROW FORMAT DELIMITED FIELDS TERMINATED BY '\5' COLLECTION ITEMS TERMINATED BY '\
 2' MAP KEYS TERMINATED BY '\3'
 STORED AS RCFILE;
 
-#基本报表
+##基本报表
 drop table if exists dprpt_mb_api_monthly;
 create external table if not exists dprpt_mb_api_monthly
 (
@@ -23,7 +23,7 @@ ROW FORMAT DELIMITED FIELDS TERMINATED BY '\5' COLLECTION ITEMS TERMINATED BY '\
 2' MAP KEYS TERMINATED BY '\3'
 STORED AS RCFILE;
 
-#端到端时间
+##端到端时间
 drop table if exists dprpt_mb_api_e2e_monthly;
 create external table if not exists dprpt_mb_api_e2e_monthly
 (
@@ -36,7 +36,7 @@ ROW FORMAT DELIMITED FIELDS TERMINATED BY '\5' COLLECTION ITEMS TERMINATED BY '\
 2' MAP KEYS TERMINATED BY '\3'
 STORED AS RCFILE;
 
-#端到端时间pv分布
+##端到端时间pv分布
 drop table if exists dprpt_mb_api_e2epvdis_monthly;
 create external table if not exists dprpt_mb_api_e2epvdis_monthly
 (
@@ -52,7 +52,7 @@ ROW FORMAT DELIMITED FIELDS TERMINATED BY '\5' COLLECTION ITEMS TERMINATED BY '\
 2' MAP KEYS TERMINATED BY '\3'
 STORED AS RCFILE;
 
-#定位时间pv分布
+##定位时间pv分布
 drop table if exists dprpt_mb_api_locpvdis_monthly;
 create external table if not exists dprpt_mb_api_locpvdis_monthly
 (

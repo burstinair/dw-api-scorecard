@@ -13,7 +13,7 @@ set mapred.job.name = dprpt_mb_api_monthly_business_${env.YYYY}${env.MM}${env.DD
 alter table $table_rpt drop if exists $partition;
 
 ################################################
-#月短评数/用户数
+##月短评数/用户数
 insert into table $table_rpt $partition
 select
     '月短评数/用户数', COUNT(commentid) / COUNT(DISTINCT userid)
@@ -23,7 +23,7 @@ where
     adddate $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE;
 
 ################################################
-#月签到数/用户数
+##月签到数/用户数
 insert into table $table_rpt $partition
 select
     '月签到数/用户数', COUNT(checkinid) / COUNT(DISTINCT userid)
@@ -33,7 +33,7 @@ where
     addtime $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE;
 
 ################################################
-#shop.bin量
+##shop.bin量
 insert into table $table_rpt $partition
 select
     '月商户页面访问量', COUNT(1)
@@ -69,23 +69,23 @@ where
     );
 
 ################################################
-#insert into table $table_rpt $partition
-#select
-#    '签到图片上传/下载速度', AVG(elapse)
-#from
-#    dpdw_traffic_base
-#where
-#    hp_stat_time $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE
-#    and path = 'addphotocheckin.bin'
-#    and elapse > 50;
+##insert into table $table_rpt $partition
+##select
+##    '签到图片上传/下载速度', AVG(elapse)
+##from
+##    dpdw_traffic_base
+##where
+##    hp_stat_time $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE
+##    and path = 'addphotocheckin.bin'
+##    and elapse > 50;
 
 ################################################
-#insert into table $table_rpt $partition
-#select
-#    '添加商户图片上传/下载速度', AVG(elapse)
-#from
-#    dpdw_traffic_base
-#where
-#    hp_stat_time $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE
-#    and path = 'addshopphoto.bin'
-#    and elapse > 50;
+##insert into table $table_rpt $partition
+##select
+##    '添加商户图片上传/下载速度', AVG(elapse)
+##from
+##    dpdw_traffic_base
+##where
+##    hp_stat_time $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE
+##    and path = 'addshopphoto.bin'
+##    and elapse > 50;
