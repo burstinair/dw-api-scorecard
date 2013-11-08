@@ -64,7 +64,7 @@ where
     hp_stat_date <= '$end_date';
 
 ################################################
-#十秒内访问比例SELECT
+#十秒内访问比例
 insert into table $table_rpt $partition
 select
     '10秒内访问比例', SUM(
