@@ -1,0 +1,46 @@
+use bi;
+
+set mapred.job.name = dprpt_mb_api_monthly_locate_${env.YYYY}${env.MM}${env.DD};
+
+#set ($start_date = "$dt.getFirstDayOfMonth($env.YYYYMMDD)")
+#set ($end_date="$dt.plusDays($env.YYYYMMDD, 0)")
+#set ($table_rpt = "dprpt_mb_api_monthly")
+#set ($partition = "partition(hp_stat_date = '$dt.getFirstDayOfMonth($env.YYYYMMDD)', hp_type = 'locate')")
+
+#set ($SATISFY_LOG_TYPE = "hp_log_type = 101")
+#set ($IN_CURRENT_MONTH = "between '$start_date' and '$end_date'")
+
+alter table $table_rpt drop if exists $partition;
+
+################################################
+insert into table $table_rpt $partition
+select
+    '定位次数', COUNT(1)
+from
+    dpdw_traffic_base
+where
+    hp_stat_time $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE
+    and (path='location.bin' or path='rgc.bin')
+    and elapse > 0 and elapse <= 60000;
+
+################################################
+insert into table $table_rpt $partition
+select
+    '刷新定位次数', COUNT(1)
+from
+    dpdw_traffic_base
+where
+    hp_stat_time $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE
+    and (trainid = -1 or trainid = 100031)
+    and other like '%refresh:1%';
+
+################################################
+insert into table $table_rpt $partition
+select
+    '弹框次数', COUNT(1)
+from
+    dpdw_traffic_base
+where
+    hp_stat_time $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE
+    and (trainid = -1 or trainid = 100031)
+    and other like '%select:%';

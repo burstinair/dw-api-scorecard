@@ -1,0 +1,71 @@
+use bi;
+
+#月pv mid
+drop table if exists dpmid_mb_api_monthly_pv;
+create external table if not exists dpmid_mb_api_monthly_pv
+(
+VALUE               int
+)
+PARTITIONED by ( hp_stat_date string )
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\5' COLLECTION ITEMS TERMINATED BY '\
+2' MAP KEYS TERMINATED BY '\3'
+STORED AS RCFILE;
+
+#基本报表
+drop table if exists dprpt_mb_api_monthly;
+create external table if not exists dprpt_mb_api_monthly
+(
+TITLE               string  ,
+VALUE               int
+)
+PARTITIONED by ( hp_stat_date string, hp_type string )
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\5' COLLECTION ITEMS TERMINATED BY '\
+2' MAP KEYS TERMINATED BY '\3'
+STORED AS RCFILE;
+
+#端到端时间
+drop table if exists dprpt_mb_api_e2e_monthly;
+create external table if not exists dprpt_mb_api_e2e_monthly
+(
+PATH                string   ,
+PV                  int      ,
+AVG_ELAPSE          int
+)
+PARTITIONED by ( hp_stat_date string )
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\5' COLLECTION ITEMS TERMINATED BY '\
+2' MAP KEYS TERMINATED BY '\3'
+STORED AS RCFILE;
+
+#端到端时间pv分布
+drop table if exists dprpt_mb_api_e2epvdis_monthly;
+create external table if not exists dprpt_mb_api_e2epvdis_monthly
+(
+AVG_RESPONSE_TIME               string  ,
+PV_PER_VISITS                   int     ,
+VISITS                          int     ,
+VISITS_RATE                     int     ,
+PV                              int     ,
+PV_RATE                         int
+)
+PARTITIONED by ( hp_stat_date string )
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\5' COLLECTION ITEMS TERMINATED BY '\
+2' MAP KEYS TERMINATED BY '\3'
+STORED AS RCFILE;
+
+#定位时间pv分布
+drop table if exists dprpt_mb_api_locpvdis_monthly;
+create external table if not exists dprpt_mb_api_locpvdis_monthly
+(
+AVG_RESPONSE_TIME               string  ,
+PV_PER_VISITS                   int     ,
+VISITS                          int     ,
+VISITS_RATE                     int     ,
+PV                              int     ,
+PV_RATE                         int     ,
+VISITS_PV_2                     int     ,
+VISITS_PV_2_RATE                double
+)
+PARTITIONED by ( hp_stat_date string )
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\5' COLLECTION ITEMS TERMINATED BY '\
+2' MAP KEYS TERMINATED BY '\3'
+STORED AS RCFILE;

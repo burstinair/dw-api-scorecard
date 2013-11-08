@@ -1,0 +1,19 @@
+use bi;
+
+set mapred.job.name = dpmid_mb_api_monthly_pv_${env.YYYY}${env.MM}${env.DD};
+
+#set ($table_mid = "dpmid_mb_api_monthly_pv")
+#set ($partition = "partition(hp_stat_date = '$dt.getFirstDayOfMonth($env.YYYYMMDD)'")
+
+#set ($SATISFY_LOG_TYPE = "hp_log_type = 101")
+#set ($IN_CURRENT_MONTH = "between '$start_date' and '$end_date'")
+
+alter table $table_mid drop if exists $partition;
+
+insert into table $table_mid $partition
+select
+    COUNT(1)
+from
+    dpdw_traffic_base
+where
+    hp_stat_time $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE;

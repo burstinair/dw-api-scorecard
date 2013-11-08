@@ -1,0 +1,26 @@
+use bi;
+
+set mapred.job.name = dprpt_mb_api_monthly_e2e_${env.YYYY}${env.MM}${env.DD};
+
+#set ($start_date = "$dt.getFirstDayOfMonth($env.YYYYMMDD)")
+#set ($end_date="$dt.plusDays($env.YYYYMMDD, 0)")
+#set ($table_rpt = "dprpt_mb_api_e2e_monthly")
+#set ($partition = "partition(hp_stat_date = '$dt.getFirstDayOfMonth($env.YYYYMMDD)')")
+
+#set ($SATISFY_LOG_TYPE = "hp_log_type = 101")
+#set ($IN_CURRENT_MONTH = "between '$start_date' and '$end_date'")
+
+alter table $table_rpt drop if exists $partition;
+
+################################################
+insert into table $table_rpt $partition
+select
+    path, COUNT(1), AVG(elapse)
+from
+    dpdw_traffic_base
+where
+    $SATISFY_LOG_TYPE and hp_stat_time $IN_CURRENT_MONTH
+    and elapse > 0 and elapse <= 60000
+group by path
+order by pv desc
+limit 100;

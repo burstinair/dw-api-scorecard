@@ -1,0 +1,80 @@
+use bi;
+
+set mapred.job.name = dprpt_mb_api_monthly_generic_${env.YYYY}${env.MM}${env.DD};
+
+#set ($start_date = "$dt.getFirstDayOfMonth($env.YYYYMMDD)")
+#set ($end_date="$dt.plusDays($env.YYYYMMDD, 0)")
+#set ($table_rpt = "dprpt_mb_api_monthly")
+#set ($partition = "partition(hp_stat_date = '$dt.getFirstDayOfMonth($env.YYYYMMDD)', hp_type = 'generic')")
+#set ($table_pv_mid = "dpmid_mb_api_monthly_pv")
+
+#set ($SATISFY_LOG_TYPE = "hp_log_type = 101")
+#set ($IN_CURRENT_MONTH = "between '$start_date' and '$end_date'")
+
+alter table $table_rpt drop if exists $partition;
+
+################################################
+#新增用户
+insert into table $table_rpt $partition
+select
+    '新增用户数', COUNT(1)
+from
+    dpmid_mb_deviceid
+where
+    cal_dt $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE;
+
+################################################
+#每月独立访客
+insert into table $table_rpt $partition
+select
+    '每月独立访客', COUNT(DISTINCT dpid)
+from
+    dpdw_traffic_base
+where
+    hp_stat_time $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE;
+
+################################################
+#每月访问次数
+insert into table $table_rpt $partition
+select
+    '每月访问次数', VALUE
+from
+    $table_pv_mid
+where
+    hp_stat_date = $start_date;
+
+################################################
+#总用户数
+insert into table $table_rpt $partition
+select
+    '总用户数', COUNT(1)
+from
+    dpmid_mb_deviceid
+where
+    cal_dt <= '$end_date' and $SATISFY_LOG_TYPE;
+
+################################################
+#总流量
+insert into table $table_rpt $partition
+select
+    '总流量', SUM(VALUE)
+from
+    $table_pv_mid
+where
+    hp_stat_date <= '$end_date';
+
+################################################
+#十秒内访问比例SELECT
+insert into table $table_rpt $partition
+select
+    '10秒内访问比例', SUM(
+        case
+            when(period = 'L_0-3s' or period = 'L_4-10s')
+            then session_cnt
+        else 0
+        end
+    )
+from
+    dprpt_mb_cnt_sd
+where
+    cal_dt $IN_CURRNET_MONTH and flag = 'T_S_L';

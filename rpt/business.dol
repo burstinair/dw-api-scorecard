@@ -1,0 +1,91 @@
+use bi;
+
+set mapred.job.name = dprpt_mb_api_monthly_business_${env.YYYY}${env.MM}${env.DD};
+
+#set ($start_date = "$dt.getFirstDayOfMonth($env.YYYYMMDD)")
+#set ($end_date="$dt.plusDays($env.YYYYMMDD, 0)")
+#set ($table_rpt = "dprpt_mb_api_monthly")
+#set ($partition = "partition(hp_stat_date = '$dt.getFirstDayOfMonth($env.YYYYMMDD)', hp_type = 'business')")
+
+#set ($SATISFY_LOG_TYPE = "hp_log_type = 101")
+#set ($IN_CURRENT_MONTH = "between '$start_date' and '$end_date'")
+
+alter table $table_rpt drop if exists $partition;
+
+################################################
+#月短评数/用户数
+insert into table $table_rpt $partition
+select
+    '月短评数/用户数', COUNT(commentid) / COUNT(DISTINCT userid)
+from
+    dpods_ci_comments
+where
+    adddate $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE;
+
+################################################
+#月签到数/用户数
+insert into table $table_rpt $partition
+select
+    '月签到数/用户数', COUNT(checkinid) / COUNT(DISTINCT userid)
+from
+    dpods_ci_checkin
+where
+    addtime $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE;
+
+################################################
+#shop.bin量
+insert into table $table_rpt $partition
+select
+    '月商户页面访问量', COUNT(1)
+from
+    dpdw_traffic_base
+where
+    hp_stat_time $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE
+    and path = 'shop.bin' and elapse > 50;
+
+################################################
+insert into table $table_rpt $partition
+select
+    '月商户电话拨打量', COUNT(1)
+from
+    dpdw_traffic_base
+where
+    hp_stat_time $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE
+    and (event_action = 'shopinfo_tel' or event_action = 'shopinfo5_tel');
+
+################################################
+insert into table $table_rpt $partition
+select
+    '月优惠券详情页访问量', COUNT(1)
+from
+    dpdw_traffic_base
+where
+    hp_stat_time $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE
+    and
+    (
+        (event_category = 'shopinfo'
+            and (event_action = 'shopinfo_coupon' or event_action='shopinfo_tab_coupon'))
+        or (event_category = 'shopinfo5' and event_action = 'shopinfo5_coupon')
+    );
+
+################################################
+#insert into table $table_rpt $partition
+#select
+#    '签到图片上传/下载速度', AVG(elapse)
+#from
+#    dpdw_traffic_base
+#where
+#    hp_stat_time $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE
+#    and path = 'addphotocheckin.bin'
+#    and elapse > 50;
+
+################################################
+#insert into table $table_rpt $partition
+#select
+#    '添加商户图片上传/下载速度', AVG(elapse)
+#from
+#    dpdw_traffic_base
+#where
+#    hp_stat_time $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE
+#    and path = 'addshopphoto.bin'
+#    and elapse > 50;
