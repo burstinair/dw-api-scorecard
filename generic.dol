@@ -71,7 +71,7 @@ select
         case
             when(period = 'L_0-3s' or period = 'L_4-10s')
             then session_cnt
-        else 0
+        else cast(0 as bigint)
         end
     )
 from

@@ -4,7 +4,7 @@ use bi;
 drop table if exists dpmid_mb_api_monthly_pv;
 create external table if not exists dpmid_mb_api_monthly_pv
 (
-VALUE               int
+VALUE               bigint
 )
 PARTITIONED by ( hp_stat_date string )
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\5' COLLECTION ITEMS TERMINATED BY '\
@@ -28,7 +28,7 @@ drop table if exists dprpt_mb_api_e2e_monthly;
 create external table if not exists dprpt_mb_api_e2e_monthly
 (
 PATH                string   ,
-PV                  int      ,
+PV                  bigint   ,
 AVG_ELAPSE          double
 )
 PARTITIONED by ( hp_stat_date string )
@@ -42,9 +42,9 @@ create external table if not exists dprpt_mb_api_e2epvdis_monthly
 (
 AVG_RESPONSE_TIME               string  ,
 PV_PER_VISITS                   double  ,
-VISITS                          int     ,
+VISITS                          bigint  ,
 VISITS_RATE                     double  ,
-PV                              int     ,
+PV                              bigint  ,
 PV_RATE                         double
 )
 PARTITIONED by ( hp_stat_date string )
@@ -58,11 +58,11 @@ create external table if not exists dprpt_mb_api_locpvdis_monthly
 (
 AVG_RESPONSE_TIME               string  ,
 PV_PER_VISITS                   double  ,
-VISITS                          int     ,
+VISITS                          bigint  ,
 VISITS_RATE                     double  ,
-PV                              int     ,
+PV                              bigint  ,
 PV_RATE                         double  ,
-VISITS_PV_2                     int     ,
+VISITS_PV_2                     bigint  ,
 VISITS_PV_2_RATE                double
 )
 PARTITIONED by ( hp_stat_date string )
