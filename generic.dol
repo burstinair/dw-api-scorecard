@@ -77,4 +77,4 @@ select
 from
     dprpt_mb_cnt_sd
 where
-    cal_dt $IN_CURRNET_MONTH and flag = 'T_S_L';
+    cal_dt $IN_CURRENT_MONTH and flag = 'T_S_L';
