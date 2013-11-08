@@ -16,7 +16,7 @@ drop table if exists dprpt_mb_api_monthly;
 create external table if not exists dprpt_mb_api_monthly
 (
 TITLE               string  ,
-VALUE               int
+VALUE               string
 )
 PARTITIONED by ( hp_stat_date string, hp_type string )
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\5' COLLECTION ITEMS TERMINATED BY '\
@@ -29,7 +29,7 @@ create external table if not exists dprpt_mb_api_e2e_monthly
 (
 PATH                string   ,
 PV                  int      ,
-AVG_ELAPSE          int
+AVG_ELAPSE          double
 )
 PARTITIONED by ( hp_stat_date string )
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\5' COLLECTION ITEMS TERMINATED BY '\
@@ -41,11 +41,11 @@ drop table if exists dprpt_mb_api_e2epvdis_monthly;
 create external table if not exists dprpt_mb_api_e2epvdis_monthly
 (
 AVG_RESPONSE_TIME               string  ,
-PV_PER_VISITS                   int     ,
+PV_PER_VISITS                   double  ,
 VISITS                          int     ,
-VISITS_RATE                     int     ,
+VISITS_RATE                     double  ,
 PV                              int     ,
-PV_RATE                         int
+PV_RATE                         double
 )
 PARTITIONED by ( hp_stat_date string )
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\5' COLLECTION ITEMS TERMINATED BY '\
@@ -57,11 +57,11 @@ drop table if exists dprpt_mb_api_locpvdis_monthly;
 create external table if not exists dprpt_mb_api_locpvdis_monthly
 (
 AVG_RESPONSE_TIME               string  ,
-PV_PER_VISITS                   int     ,
+PV_PER_VISITS                   double  ,
 VISITS                          int     ,
-VISITS_RATE                     int     ,
+VISITS_RATE                     double  ,
 PV                              int     ,
-PV_RATE                         int     ,
+PV_RATE                         double  ,
 VISITS_PV_2                     int     ,
 VISITS_PV_2_RATE                double
 )
