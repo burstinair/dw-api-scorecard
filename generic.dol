@@ -21,7 +21,7 @@ select
 from
     dpmid_mb_deviceid
 where
-    cal_dt $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE;
+    cal_dt $IN_CURRENT_MONTH;
 
 ################################################
 ##每月独立访客
@@ -51,7 +51,7 @@ select
 from
     dpmid_mb_deviceid
 where
-    cal_dt <= '$end_date' and $SATISFY_LOG_TYPE;
+    cal_dt <= '$end_date';
 
 ################################################
 ##总流量
