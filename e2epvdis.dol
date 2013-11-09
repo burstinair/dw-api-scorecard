@@ -17,9 +17,9 @@ alter table $table_rpt drop if exists $partition;
 drop table if exists $table_tmp;
 create table if not exists $table_tmp
 (
-AVG             double,
-PV              bigint,
-VISITS          bigint
+avg             double,
+pv              bigint,
+visits          bigint
 )
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\5' COLLECTION ITEMS TERMINATED BY '\
 2' MAP KEYS TERMINATED BY '\3'
@@ -51,10 +51,10 @@ group by tt.avgT;
 ##写入报表
 insert overwrite table $table_rpt $partition
 select
-    rs.avgT, rs.pv / rs.visits, rs.visits, rs.visits / rssum.sum_visits, rs.pv, rs.pv / rssum.sum_pv
+    rs.avg, rs.pv / rs.visits, rs.visits, rs.visits / rssum.sum_visits, rs.pv, rs.pv / rssum.sum_pv
 from $table_tmp rs
 join (
     select SUM(visits) as sum_visits, SUM(pv) as sum_pv
     from $table_tmp
 ) rssum
-order by rs.avgT;
+order by rs.avg;
