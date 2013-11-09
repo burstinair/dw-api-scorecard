@@ -17,7 +17,7 @@ select
     rs.avgT, rs.pv / rs.visits, rs.visits, rs.visits / SUM(rs.visits), rs.pv, rs.pv / SUM(rs.pv)
 from (
     select
-        tt.avgT as avgT, SUM(tt.pv * tt.c) AS pv, SUM(tt.c) AS visits
+        avgT, SUM(pv * c) AS pv, SUM(c) AS visits
     from (
         select t.pv as pv, t.avgT as avgT, count(session_id) as c
         from (
