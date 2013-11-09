@@ -5,6 +5,7 @@ set mapred.job.name = dprpt_mb_api_monthly_e2epvdis_${env.YYYY}${env.MM}${env.DD
 #set ($start_date = "$dt.getFirstDayOfMonth($env.YYYYMMDD)")
 #set ($end_date="$dt.plusDays($env.YYYYMMDD, 0)")
 #set ($table_rpt = "dprpt_mb_api_e2epvdis_monthly")
+#set ($table_tmp = "dpstg_mb_api_e2epvdis_monthly_tmp")
 #set ($partition = "partition(hp_stat_date = '$dt.getFirstDayOfMonth($env.YYYYMMDD)')")
 
 #set ($IN_CURRENT_MONTH = "between '$start_date' and '$end_date'")
@@ -12,27 +13,44 @@ set mapred.job.name = dprpt_mb_api_monthly_e2epvdis_${env.YYYY}${env.MM}${env.DD
 alter table $table_rpt drop if exists $partition;
 
 ################################################
+##创建临时表
+drop table if exists $table_tmp;
+create external table if not exists $table_tmp
+(
+AVG             double,
+PV              bigint,
+VISITS          bigint
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\5' COLLECTION ITEMS TERMINATED BY '\
+2' MAP KEYS TERMINATED BY '\3'
+STORED AS RCFILE;
+
+################################################
+##计算中间数据
+insert overwrite table $table_tmp
+select
+    tt.avgT, SUM(pv * c) AS pv, SUM(c) AS visits
+from (
+    select t.pv, t.avgT, count(session_id) as c
+    from (
+        select
+            session_id,
+            ROUND(SUM(elapse_sum) / SUM(elapse_cnt) / 1000) as avgT,
+            SUM(elapse_cnt) as pv
+        from dpmid_mb_uv_sd
+        where hp_cal_dt $IN_CURRENT_MONTH
+            and train_id = 7
+            and elapse_cnt > 0
+        group by session_id, hp_cal_dt
+    ) t
+    group by t.pv, t.avgT
+) tt
+group by tt.avgT;
+
+################################################
+##写入报表
 insert overwrite table $table_rpt $partition
 select
     avgT, pv / visits, visits, visits / SUM(visits), pv, pv / SUM(pv)
-from (
-    select
-        avgT, SUM(pv * c) AS pv, SUM(c) AS visits
-    from (
-        select pv, avgT, count(session_id) as c
-        from (
-            select
-                session_id,
-                ROUND(SUM(elapse_sum) / SUM(elapse_cnt) / 1000) as avgT,
-                SUM(elapse_cnt) as pv
-            from dpmid_mb_uv_sd
-            where hp_cal_dt $IN_CURRENT_MONTH
-                and train_id = 7
-                and elapse_cnt > 0
-            group by session_id, hp_cal_dt
-        ) t
-        group by t.pv, t.avgT
-    ) tt
-    group by tt.avgT
-    order by tt.avgT
-) rs;
+from $table_tmp
+order by avgT;
