@@ -18,10 +18,10 @@ select
     rs.avgT, rs.pv / rs.visits, rs.visits, rs.visits / SUM(rs.visits), rs.pv, rs.pv / SUM(rs.pv), rs.pv2, rs.pv2 / rs.visits
 from (
     select
-        tt.avgT, sum(tt.pv * tt.c) as pv, sum(tt.pv2 * tt.c) as pv2, sum(tt.c) as visits
+        tt.avgT as avgT, sum(tt.pv * tt.c) as pv, sum(tt.pv2 * tt.c) as pv2, sum(tt.c) as visits
     from (
         select
-            t.pv, t.pv2, t.avgT, COUNT(sessionid) as c
+            t.pv as pv, t.pv2 as pv2, t.avgT as avgT, COUNT(sessionid) as c
         from (
             select
                 pltT.sessionid as sessionid, pltT.avgT as avgT, pvT.pv as pv, pv2T.pv as pv2
@@ -72,8 +72,8 @@ from (
             ) pv2T
             on pltT.sessionid = pv2T.sessionid and pltT.statdate = pv2T.statdate
         ) t
-        group by t.pv, t.avgT
+        group by pv, avgT
     ) tt
-    group by tt.avgT
-    order by tt.avgT
+    group by avgT
+    order by avgT
 ) rs;
