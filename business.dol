@@ -20,7 +20,7 @@ select
 from
     dpods_ci_comments
 where
-    adddate $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE;
+    adddate $IN_CURRENT_MONTH;
 
 ################################################
 ##月签到数/用户数
@@ -30,7 +30,7 @@ select
 from
     dpods_ci_checkin
 where
-    addtime $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE;
+    addtime $IN_CURRENT_MONTH;
 
 ################################################
 ##shop.bin量
