@@ -19,7 +19,7 @@ from (
     select
         tt.avgT, SUM(tt.pv * tt.c) AS pv, SUM(tt.c) AS visits
     from (
-        select t.pv, t.avgT, count(session_id) as c
+        select t.pv as pv, t.avgT as avgT, count(session_id) as c
         from (
             select
                 session_id,
