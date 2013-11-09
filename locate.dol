@@ -30,7 +30,7 @@ select
 from
     dpdw_traffic_base
 where
-    hp_stat_time $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE
+    hp_stat_time $IN_CURRENT_MONTH##FIXME and $SATISFY_LOG_TYPE
     and (trainid = -1 or trainid = 100031)
     and other like '%refresh:1%';
 
@@ -41,6 +41,6 @@ select
 from
     dpdw_traffic_base
 where
-    hp_stat_time $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE
+    hp_stat_time $IN_CURRENT_MONTH##FIXME and $SATISFY_LOG_TYPE
     and (trainid = -1 or trainid = 100031)
     and other like '%select:%';

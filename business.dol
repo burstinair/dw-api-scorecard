@@ -50,7 +50,7 @@ select
 from
     dpdw_traffic_base
 where
-    hp_stat_time $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE
+    hp_stat_time $IN_CURRENT_MONTH##FIXME and $SATISFY_LOG_TYPE
     and (event_action = 'shopinfo_tel' or event_action = 'shopinfo5_tel');
 
 ################################################
@@ -60,11 +60,11 @@ select
 from
     dpdw_traffic_base
 where
-    hp_stat_time $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE
+    hp_stat_time $IN_CURRENT_MONTH##FIXME and $SATISFY_LOG_TYPE
     and
     (
         (event_category = 'shopinfo'
-            and (event_action = 'shopinfo_coupon' or event_action='shopinfo_tab_coupon'))
+            and (event_action = 'shopinfo_coupon' or event_action = 'shopinfo_tab_coupon'))
         or (event_category = 'shopinfo5' and event_action = 'shopinfo5_coupon')
     );
 
