@@ -33,6 +33,6 @@ from (
         ) t
         group by t.pv, t.avgT
     ) tt
-    group by avgT
-    order by avgT
+    group by tt.avgT
+    order by tt.avgT
 ) rs;
