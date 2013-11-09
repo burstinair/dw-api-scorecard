@@ -13,9 +13,9 @@ set mapred.job.name = dprpt_mb_api_monthly_e2epvdis_${env.YYYY}${env.MM}${env.DD
 alter table $table_rpt drop if exists $partition;
 
 ################################################
-##¥¥Ω®¡Ÿ ±±Ì
+##ÂàõÂª∫‰∏¥Êó∂Ë°®
 drop table if exists $table_tmp;
-create external table if not exists $table_tmp
+create table if not exists $table_tmp
 (
 AVG             double,
 PV              bigint,
@@ -26,7 +26,7 @@ ROW FORMAT DELIMITED FIELDS TERMINATED BY '\5' COLLECTION ITEMS TERMINATED BY '\
 STORED AS RCFILE;
 
 ################################################
-##º∆À„÷–º‰ ˝æ›
+##ËÆ°ÁÆó‰∏≠Èó¥Êï∞ÊçÆ
 insert overwrite table $table_tmp
 select
     tt.avgT, SUM(pv * c) AS pv, SUM(c) AS visits
@@ -48,9 +48,13 @@ from (
 group by tt.avgT;
 
 ################################################
-##–¥»Î±®±Ì
+##ÂÜôÂÖ•Êä•Ë°®
 insert overwrite table $table_rpt $partition
 select
-    avgT, pv / visits, visits, visits / SUM(visits), pv, pv / SUM(pv)
-from $table_tmp
-order by avgT;
+    rs.avgT, rs.pv / rs.visits, rs.visits, rs.visits / rssum.sum_visits, rs.pv, rs.pv / rssum.sum_pv
+from $table_tmp as rs
+join (
+    select SUM(visits) as sum_visits, SUM(pv) as sum_pv
+    from $table_tmp
+) rssum
+order by rs.avgT;
