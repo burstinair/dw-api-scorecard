@@ -13,7 +13,7 @@ set mapred.job.name = dprpt_mb_api_monthly_locpvdis_${env.YYYY}${env.MM}${env.DD
 alter table $table_rpt drop if exists $partition;
 
 ################################################
-insert into table $table_rpt $partition
+insert overwrite table $table_rpt $partition
 select
     rs.avgT, rs.pv / rs.visits, rs.visits, rs.visits / SUM(rs.visits), rs.pv, rs.pv / SUM(rs.pv), rs.pv2, rs.pv2 / rs.visits
 from (

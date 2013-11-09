@@ -13,7 +13,7 @@ set mapred.job.name = dprpt_mb_api_monthly_e2e_${env.YYYY}${env.MM}${env.DD};
 alter table $table_rpt drop if exists $partition;
 
 ################################################
-insert into table $table_rpt $partition
+insert overwrite table $table_rpt $partition
 select
     path, COUNT(1) as pv, AVG(elapse)
 from

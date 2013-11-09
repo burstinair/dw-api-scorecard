@@ -12,14 +12,14 @@ set mapred.job.name = dprpt_mb_api_monthly_e2epvdis_${env.YYYY}${env.MM}${env.DD
 alter table $table_rpt drop if exists $partition;
 
 ################################################
-insert into table $table_rpt $partition
+insert overwrite table $table_rpt $partition
 select
-    rs.avgT, rs.pv / rs.visits, rs.visits, rs.visits / SUM(rs.visits), rs.pv, rs.pv / SUM(rs.pv)
+    avgT, pv / visits, visits, visits / SUM(visits), pv, pv / SUM(pv)
 from (
     select
         avgT, SUM(pv * c) AS pv, SUM(c) AS visits
     from (
-        select t.pv as pv, t.avgT as avgT, count(session_id) as c
+        select pv, avgT, count(session_id) as c
         from (
             select
                 session_id,
