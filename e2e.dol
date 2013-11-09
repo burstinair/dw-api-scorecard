@@ -15,7 +15,7 @@ alter table $table_rpt drop if exists $partition;
 ################################################
 insert into table $table_rpt $partition
 select
-    path, COUNT(1), AVG(elapse)
+    path, COUNT(1) as pv, AVG(elapse)
 from
     dpdw_traffic_base
 where
