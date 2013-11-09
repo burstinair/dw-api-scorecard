@@ -1,10 +1,10 @@
 use bi;
 
-set mapred.job.name = dprpt_mb_api_monthly_e2e_${env.YYYY}${env.MM}${env.DD};
+set mapred.job.name = dprpt_mb_api_monthly_locpvdis_${env.YYYY}${env.MM}${env.DD};
 
 #set ($start_date = "$dt.getFirstDayOfMonth($env.YYYYMMDD)")
 #set ($end_date="$dt.plusDays($env.YYYYMMDD, 0)")
-#set ($table_rpt = "dprpt_mb_api_e2e_monthly")
+#set ($table_rpt = "dprpt_mb_api_locpvdis_monthly")
 #set ($partition = "partition(hp_stat_date = '$dt.getFirstDayOfMonth($env.YYYYMMDD)')")
 
 #set ($SATISFY_LOG_TYPE = "hp_log_type = 101")
