@@ -24,20 +24,20 @@ where
     cal_dt $IN_CURRENT_MONTH;
 
 ################################################
-##每月独立访客
+##月独立访客
 insert into table $table_rpt $partition
 select
-    '每月独立访客', COUNT(DISTINCT dpid)
+    '月独立访客', COUNT(DISTINCT dpid)
 from
     dpdw_traffic_base
 where
     hp_stat_time $IN_CURRENT_MONTH and $SATISFY_LOG_TYPE;
 
 ################################################
-##每月访问次数
+##月访问次数
 insert into table $table_rpt $partition
 select
-    '每月访问次数', VALUE
+    '月访问次数', VALUE
 from
     $table_pv_mid
 where

@@ -33,7 +33,7 @@ from (
                 where
                     $SATISFY_LOG_TYPE and hp_stat_time $IN_CURRENT_MONTH
                     and trainid = 7
-                    and valuetype = 1
+                    ##FIXME and valuetype = 1
                     and tag in (-1, 1, 4, 5)
                     and path = 'locate.bin' 
                     and elapse > 0
@@ -49,7 +49,7 @@ from (
                 where
                     $SATISFY_LOG_TYPE and hp_stat_time $IN_CURRENT_MONTH
                     and trainid = 7
-                    and valuetype = 1
+                    ##FIXME and valuetype = 1
                     and tag in (-1, 1, 4, 5)
                     and elapse > 0
                 group by sessionid, statdate
@@ -64,7 +64,7 @@ from (
                 where
                     $SATISFY_LOG_TYPE and hp_stat_time $IN_CURRENT_MONTH
                     and trainid = 7
-                    and valuetype = 1
+                    ##FIXME and valuetype = 1
                     and tag in (-1, 1, 4, 5)
                     and elapse > 0
                 group by sessionid, statdate

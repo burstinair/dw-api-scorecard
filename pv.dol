@@ -2,6 +2,8 @@ use bi;
 
 set mapred.job.name = dpmid_mb_api_monthly_pv_${env.YYYY}${env.MM}${env.DD};
 
+#set ($start_date = "$dt.getFirstDayOfMonth($env.YYYYMMDD)")
+#set ($end_date="$dt.plusDays($env.YYYYMMDD, 0)")
 #set ($table_mid = "dpmid_mb_api_monthly_pv")
 #set ($partition = "partition(hp_stat_date = '$dt.getFirstDayOfMonth($env.YYYYMMDD)')")
 
