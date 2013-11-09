@@ -52,7 +52,7 @@ group by tt.avgT;
 insert overwrite table $table_rpt $partition
 select
     rs.avgT, rs.pv / rs.visits, rs.visits, rs.visits / rssum.sum_visits, rs.pv, rs.pv / rssum.sum_pv
-from $table_tmp as rs
+from $table_tmp rs
 join (
     select SUM(visits) as sum_visits, SUM(pv) as sum_pv
     from $table_tmp
