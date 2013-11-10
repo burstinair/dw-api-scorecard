@@ -5,7 +5,7 @@ set mapred.job.name = dprpt_mb_api_monthly_generic_${env.YYYY}${env.MM}${env.DD}
 #set ($start_date = "$dt.getFirstDayOfMonth($env.YYYYMMDD)")
 #set ($end_date="$dt.plusDays($env.YYYYMMDD, 0)")
 #set ($table_rpt = "dprpt_mb_api_monthly")
-#set ($partition = "partition(hp_stat_date = '$dt.getFirstDayOfMonth($env.YYYYMMDD)', hp_type = 'generic')")
+#set ($partition = "partition(hp_stat_date = '$dt.getFirstDayOfMonth($env.YYYYMMDD)')")
 #set ($table_pv_mid = "dpmid_mb_api_monthly_pv")
 
 #set ($SATISFY_LOG_TYPE = "hp_log_type = 101")

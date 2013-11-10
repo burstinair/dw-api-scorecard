@@ -11,14 +11,38 @@ ROW FORMAT DELIMITED FIELDS TERMINATED BY '\5' COLLECTION ITEMS TERMINATED BY '\
 2' MAP KEYS TERMINATED BY '\3'
 STORED AS RCFILE;
 
-##基本报表
+##generic报表
 drop table if exists dprpt_mb_api_monthly;
 create external table if not exists dprpt_mb_api_monthly
 (
 TITLE               string  ,
 VALUE               string
 )
-PARTITIONED by ( hp_stat_date string, hp_type string )
+PARTITIONED by ( hp_stat_date string )
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\5' COLLECTION ITEMS TERMINATED BY '\
+2' MAP KEYS TERMINATED BY '\3'
+STORED AS RCFILE;
+
+##business报表
+drop table if exists dprpt_mb_api_business_monthly;
+create external table if not exists dprpt_mb_api_business_monthly
+(
+TITLE               string  ,
+VALUE               string
+)
+PARTITIONED by ( hp_stat_date string )
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\5' COLLECTION ITEMS TERMINATED BY '\
+2' MAP KEYS TERMINATED BY '\3'
+STORED AS RCFILE;
+
+##locate报表
+drop table if exists dprpt_mb_api_locate_monthly;
+create external table if not exists dprpt_mb_api_locate_monthly
+(
+TITLE               string  ,
+VALUE               string
+)
+PARTITIONED by ( hp_stat_date string )
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\5' COLLECTION ITEMS TERMINATED BY '\
 2' MAP KEYS TERMINATED BY '\3'
 STORED AS RCFILE;

@@ -4,8 +4,8 @@ set mapred.job.name = dprpt_mb_api_monthly_business_${env.YYYY}${env.MM}${env.DD
 
 #set ($start_date = "$dt.getFirstDayOfMonth($env.YYYYMMDD)")
 #set ($end_date="$dt.plusDays($env.YYYYMMDD, 0)")
-#set ($table_rpt = "dprpt_mb_api_monthly")
-#set ($partition = "partition(hp_stat_date = '$dt.getFirstDayOfMonth($env.YYYYMMDD)', hp_type = 'business')")
+#set ($table_rpt = "dprpt_mb_api_business_monthly")
+#set ($partition = "partition(hp_stat_date = '$dt.getFirstDayOfMonth($env.YYYYMMDD)')")
 
 #set ($SATISFY_LOG_TYPE = "hp_log_type = 101")
 #set ($IN_CURRENT_MONTH = "between '$start_date' and '$end_date'")
