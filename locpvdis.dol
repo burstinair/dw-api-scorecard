@@ -14,7 +14,7 @@ set mapred.job.name = dprpt_mb_api_monthly_locpvdis_${env.YYYY}${env.MM}${env.DD
 alter table $table_rpt drop if exists $partition;
 
 ################################################
-##¥¥Ω®¡Ÿ ±±Ì
+##ÂàõÂª∫‰∏¥Êó∂Ë°®
 drop table if exists $table_tmp;
 create table if not exists $table_tmp
 (
@@ -28,7 +28,7 @@ ROW FORMAT DELIMITED FIELDS TERMINATED BY '\5' COLLECTION ITEMS TERMINATED BY '\
 STORED AS RCFILE;
 
 ################################################
-##º∆À„÷–º‰ ˝æ›
+##ËÆ°ÁÆó‰∏≠Èó¥Êï∞ÊçÆ
 insert overwrite $table_tmp
 select
     tt.avgT as avgT, sum(tt.pv * tt.c) as pv, sum(tt.pv2 * tt.c) as pv2, sum(tt.c) as visits
@@ -90,7 +90,7 @@ from (
 group by tt.avgT;
 
 ################################################
-##–¥»Î±®±Ì
+##ÂÜôÂÖ•Êä•Ë°®
 insert overwrite table $table_rpt $partition
 select
     rs.avg, rs.pv / rs.visits, rs.visits, rs.visits / rssum.sum_visits, rs.pv, rs.pv / rssum.sum_pv, rs.pv2, rs.pv2 / rs.visits
