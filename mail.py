@@ -4,38 +4,38 @@ main_begin()
 sql = ```
     select 
 ```%(g.BATCH_CAL_DT)
-generate_mail("", '', 'Ïî,Öµ', 'left', sql, 700)
+generate_mail("", '', 'é¡¹,å€¼', 'left', sql, 700)
 
-#ÒµÎñ
+#ä¸šåŠ¡
 sql = ```
     select 
 ```%(g.BATCH_CAL_DT)
-generate_mail("", '', 'Ïî,Öµ', 'left', sql, 700)
+generate_mail("", '', 'é¡¹,å€¼', 'left', sql, 700)
 
-#¶¨Î»
+#å®šä½
 sql = ```
     select 
 ```%(g.BATCH_CAL_DT)
-generate_mail("", '', 'Ïî,Öµ', 'left', sql, 700)
+generate_mail("", '', 'é¡¹,å€¼', 'left', sql, 700)
 
-#¶Ëµ½¶ËÏìÓ¦Ê±¼ä
+#ç«¯åˆ°ç«¯å“åº”æ—¶é—´
 sql = ```
 
 ```%(g.BATCH_CAL_DT)
-generate_mail("¶Ëµ½¶ËÏìÓ¦Ê±¼ä", '', '·ÃÎÊÂ·¾¶,·ÃÎÊ´ÎÊı,Æ½¾ùÏìÓ¦Ê±¼ä(ms)', 'left', sql, 700)
+generate_mail("ç«¯åˆ°ç«¯å“åº”æ—¶é—´", '', 'è®¿é—®è·¯å¾„,è®¿é—®æ¬¡æ•°,å¹³å‡å“åº”æ—¶é—´(ms)', 'left', sql, 700)
 
-#¶Ëµ½¶ËÏìÓ¦Ê±¼äµÄPV·Ö²¼
+#ç«¯åˆ°ç«¯å“åº”æ—¶é—´çš„PVåˆ†å¸ƒ
 sql = ```
 
 ```%(g.BATCH_CAL_DT)
-generate_mail("¶Ëµ½¶ËÏìÓ¦Ê±¼äµÄPV·Ö²¼", '', 'Æ½¾ùÏìÓ¦Ê±¼ä(ms),Ã¿Session·ÃÎÊ´ÎÊı,SessionÊı,SessionÊıÕ¼±È,·ÃÎÊ´ÎÊı,·ÃÎÊ´ÎÊıÕ¼±È', 'left', sql, 700)
+generate_mail("ç«¯åˆ°ç«¯å“åº”æ—¶é—´çš„PVåˆ†å¸ƒ", '', 'å¹³å‡å“åº”æ—¶é—´(ms),æ¯Sessionè®¿é—®æ¬¡æ•°,Sessionæ•°,Sessionæ•°å æ¯”,è®¿é—®æ¬¡æ•°,è®¿é—®æ¬¡æ•°å æ¯”', 'left', sql, 700)
 
-#¶¨Î»Ê±¼äµÄPV·Ö²¼
+#å®šä½æ—¶é—´çš„PVåˆ†å¸ƒ
 sql = ```
 
 ```%(g.BATCH_CAL_DT)
-generate_mail("¶¨Î»Ê±¼äµÄPV·Ö²¼", '', 'Æ½¾ùÏìÓ¦Ê±¼ä(ms),Ã¿Session·ÃÎÊ´ÎÊı,SessionÊı,SessionÊıÕ¼±È,·ÃÎÊ´ÎÊı,·ÃÎÊ´ÎÊıÕ¼±È,·ÃÎÊ´ÎÊıĞ¡ÓÚµÈÓÚ2µÄSessionÊı,·ÃÎÊ´ÎÊıĞ¡ÓÚµÈÓÚ2µÄSessionÊıÕ¼±È', 'left', sql, 700)
+generate_mail("å®šä½æ—¶é—´çš„PVåˆ†å¸ƒ", '', 'å¹³å‡å“åº”æ—¶é—´(ms),æ¯Sessionè®¿é—®æ¬¡æ•°,Sessionæ•°,Sessionæ•°å æ¯”,è®¿é—®æ¬¡æ•°,è®¿é—®æ¬¡æ•°å æ¯”,è®¿é—®æ¬¡æ•°å°äºç­‰äº2çš„Sessionæ•°,è®¿é—®æ¬¡æ•°å°äºç­‰äº2çš„Sessionæ•°å æ¯”', 'left', sql, 700)
 
 mail_end()
 
-sendEmail(['zhongkai.zhao@dianping.com'], [], [], "ÒÆ¶¯APIÔÂ±¨", g.HTML_TEXT)
+sendEmail(['zhongkai.zhao@dianping.com'], [], [], "ç§»åŠ¨APIæœˆæŠ¥", g.HTML_TEXT)
