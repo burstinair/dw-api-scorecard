@@ -5,6 +5,7 @@ set mapred.job.name = dprpt_mb_api_monthly_locpvdis_${env.YYYY}${env.MM}${env.DD
 #set ($start_date = "$dt.getFirstDayOfMonth($env.YYYYMMDD)")
 #set ($end_date="$dt.plusDays($env.YYYYMMDD, 0)")
 #set ($table_rpt = "dprpt_mb_api_locpvdis_monthly")
+#set ($table_tmp = "dpstg_mb_api_locpvdis_monthly_tmp")
 #set ($partition = "partition(hp_stat_date = '$dt.getFirstDayOfMonth($env.YYYYMMDD)')")
 
 #set ($SATISFY_LOG_TYPE = "hp_log_type = 101")
@@ -13,67 +14,89 @@ set mapred.job.name = dprpt_mb_api_monthly_locpvdis_${env.YYYY}${env.MM}${env.DD
 alter table $table_rpt drop if exists $partition;
 
 ################################################
-insert overwrite table $table_rpt $partition
+##创建临时表
+drop table if exists $table_tmp;
+create table if not exists $table_tmp
+(
+avg             double,
+pv              bigint,
+pv2             bigint,
+visits          bigint
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\5' COLLECTION ITEMS TERMINATED BY '\
+2' MAP KEYS TERMINATED BY '\3'
+STORED AS RCFILE;
+
+################################################
+##计算中间数据
+insert overwrite $table_tmp
 select
-    rs.avgT, rs.pv / rs.visits, rs.visits, rs.visits / SUM(rs.visits), rs.pv, rs.pv / SUM(rs.pv), rs.pv2, rs.pv2 / rs.visits
+    tt.avgT as avgT, sum(tt.pv * tt.c) as pv, sum(tt.pv2 * tt.c) as pv2, sum(tt.c) as visits
 from (
     select
-        tt.avgT as avgT, sum(tt.pv * tt.c) as pv, sum(tt.pv2 * tt.c) as pv2, sum(tt.c) as visits
+        t.pv as pv, t.pv2 as pv2, t.avgT as avgT, COUNT(sessionid) as c
     from (
         select
-            t.pv as pv, t.pv2 as pv2, t.avgT as avgT, COUNT(sessionid) as c
+            pltT.sessionid as sessionid, pltT.avgT as avgT, pvT.pv as pv, pv2T.pv as pv2
         from (
             select
-                pltT.sessionid as sessionid, pltT.avgT as avgT, pvT.pv as pv, pv2T.pv as pv2
-            from (
-                select
-                    sessionid, hp_stat_time, round(sum(elapse) / count(1) / 1000) as avgT
-                from
-                    dpdw_traffic_base
-                where
-                    $SATISFY_LOG_TYPE and hp_stat_time $IN_CURRENT_MONTH
-                    and trainid = 7
-                    ##FIXME and valuetype = 1
-                    and tag in (-1, 1, 4, 5)
-                    and path = 'locate.bin' 
-                    and elapse > 0
-                group by sessionid, statdate
-                having count(1) = 1
-            ) pltT
-            join
-            (
-                select
-                    sessionid, hp_stat_time, count(1) as pv
-                from
-                    dpdw_traffic_base
-                where
-                    $SATISFY_LOG_TYPE and hp_stat_time $IN_CURRENT_MONTH
-                    and trainid = 7
-                    ##FIXME and valuetype = 1
-                    and tag in (-1, 1, 4, 5)
-                    and elapse > 0
-                group by sessionid, statdate
-            ) pvT
-            on pltT.sessionid = pvT.sessionid and pltT.statdate = pvT.statdate
-            join
-            (
-                select
-                    sessionid, statdate, count(1) as pv
-                from
-                    dpdw_traffic_base
-                where
-                    $SATISFY_LOG_TYPE and hp_stat_time $IN_CURRENT_MONTH
-                    and trainid = 7
-                    ##FIXME and valuetype = 1
-                    and tag in (-1, 1, 4, 5)
-                    and elapse > 0
-                group by sessionid, statdate
-                having COUNT(1) <= 2
-            ) pv2T
-            on pltT.sessionid = pv2T.sessionid and pltT.statdate = pv2T.statdate
-        ) t
-        group by pv, avgT
-    ) tt
-    group by avgT
-    order by avgT
-) rs;
+                sessionid, hp_stat_time, round(sum(elapse) / count(1) / 1000) as avgT
+            from
+                dpdw_traffic_base
+            where
+                $SATISFY_LOG_TYPE and hp_stat_time $IN_CURRENT_MONTH
+                and trainid = 7
+                ##FIXME and valuetype = 1
+                and tag in (-1, 1, 4, 5)
+                and path = 'locate.bin' 
+                and elapse > 0
+            group by sessionid, statdate
+            having count(1) = 1
+        ) pltT
+        join
+        (
+            select
+                sessionid, hp_stat_time, count(1) as pv
+            from
+                dpdw_traffic_base
+            where
+                $SATISFY_LOG_TYPE and hp_stat_time $IN_CURRENT_MONTH
+                and trainid = 7
+                ##FIXME and valuetype = 1
+                and tag in (-1, 1, 4, 5)
+                and elapse > 0
+            group by sessionid, statdate
+        ) pvT
+        on pltT.sessionid = pvT.sessionid and pltT.statdate = pvT.statdate
+        join
+        (
+            select
+                sessionid, statdate, count(1) as pv
+            from
+                dpdw_traffic_base
+            where
+                $SATISFY_LOG_TYPE and hp_stat_time $IN_CURRENT_MONTH
+                and trainid = 7
+                ##FIXME and valuetype = 1
+                and tag in (-1, 1, 4, 5)
+                and elapse > 0
+            group by sessionid, statdate
+            having COUNT(1) <= 2
+        ) pv2T
+        on pltT.sessionid = pv2T.sessionid and pltT.statdate = pv2T.statdate
+    ) t
+    group by t.pv, t.avgT
+) tt
+group by tt.avgT;
+
+################################################
+##写入报表
+insert overwrite table $table_rpt $partition
+select
+    rs.avg, rs.pv / rs.visits, rs.visits, rs.visits / rssum.sum_visits, rs.pv, rs.pv / rssum.sum_pv, rs.pv2, rs.pv2 / rs.visits
+from $table_tmp rs
+join (
+    select SUM(visits) as sum_visits, SUM(pv) as sum_pv
+    from $table_tmp
+) rssum
+order by rs.avg;
