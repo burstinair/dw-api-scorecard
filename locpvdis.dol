@@ -34,13 +34,13 @@ select
     tt.avgT as avgT, sum(tt.pv * tt.c) as pv, sum(tt.pv2 * tt.c) as pv2, sum(tt.c) as visits
 from (
     select
-        t.pv as pv, t.pv2 as pv2, t.avgT as avgT, COUNT(sessionid) as c
+        t.pv as pv, t.pv2 as pv2, t.avgT as avgT, COUNT(session_id) as c
     from (
         select
-            pltT.sessionid as sessionid, pltT.avgT as avgT, pvT.pv as pv, pv2T.pv as pv2
+            pltT.session_id as session_id, pltT.avgT as avgT, pvT.pv as pv, pv2T.pv as pv2
         from (
             select
-                sessionid, hp_stat_time, round(sum(elapse) / count(1) / 1000) as avgT
+                session_id, hp_stat_time, round(sum(elapse) / count(1) / 1000) as avgT
             from
                 dpdw_traffic_base
             where
@@ -50,13 +50,13 @@ from (
                 and tag in (-1, 1, 4, 5)
                 and path = 'locate.bin' 
                 and elapse > 0
-            group by sessionid, statdate
+            group by session_id, hp_stat_time
             having count(1) = 1
         ) pltT
         join
         (
             select
-                sessionid, hp_stat_time, count(1) as pv
+                session_id, hp_stat_time, count(1) as pv
             from
                 dpdw_traffic_base
             where
@@ -65,13 +65,13 @@ from (
                 ##FIXME and valuetype = 1
                 and tag in (-1, 1, 4, 5)
                 and elapse > 0
-            group by sessionid, statdate
+            group by session_id, hp_stat_time
         ) pvT
-        on pltT.sessionid = pvT.sessionid and pltT.statdate = pvT.statdate
+        on pltT.session_id = pvT.session_id and pltT.hp_stat_time = pvT.hp_stat_time
         join
         (
             select
-                sessionid, statdate, count(1) as pv
+                session_id, hp_stat_time, count(1) as pv
             from
                 dpdw_traffic_base
             where
@@ -80,10 +80,10 @@ from (
                 ##FIXME and valuetype = 1
                 and tag in (-1, 1, 4, 5)
                 and elapse > 0
-            group by sessionid, statdate
+            group by session_id, hp_stat_time
             having COUNT(1) <= 2
         ) pv2T
-        on pltT.sessionid = pv2T.sessionid and pltT.statdate = pv2T.statdate
+        on pltT.session_id = pv2T.session_id and pltT.hp_stat_time = pv2T.hp_stat_time
     ) t
     group by t.pv, t.avgT
 ) tt
