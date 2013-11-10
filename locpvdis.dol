@@ -29,7 +29,7 @@ STORED AS RCFILE;
 
 ################################################
 ##计算中间数据
-insert overwrite $table_tmp
+insert overwrite table $table_tmp
 select
     tt.avgT as avgT, sum(tt.pv * tt.c) as pv, sum(tt.pv2 * tt.c) as pv2, sum(tt.c) as visits
 from (
