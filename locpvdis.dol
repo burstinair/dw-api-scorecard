@@ -85,7 +85,7 @@ from (
         ) pv2T
         on pltT.session_id = pv2T.session_id and pltT.hp_stat_time = pv2T.hp_stat_time
     ) t
-    group by t.pv, t.avgT
+    group by t.pv, t.pv2, t.avgT
 ) tt
 group by tt.avgT;
 
